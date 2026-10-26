@@ -54,7 +54,7 @@ if(isset($_POST['useCode'])){
 	while ($row = $SQL -> fetch(PDO::FETCH_ASSOC)){
 
 	if($codeerror == false){
-	$codeprice = $row['amount'];
+	$codeprice = $row['amount']; $_SESSION['codeprice']['ipv6'] = $codeprice;
 	}
 
 		

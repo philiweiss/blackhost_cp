@@ -48,24 +48,19 @@ if(isset($_POST['order'])){
 	$backups = $_POST['backups'];
 	$version = $_POST['version'];
 
-	if($_POST['mainrabatt_script'] < 1){
-		$mainrabatt_script = 1;
-	}
-
-	if($_POST['mainrabatt_script'] > 0){
-		$mainrabatt_script = $_POST['mainrabatt_script'];
-	}
+	$mainrabatt_script = $site->getProduktRabatt('csgo');
 
 
     $db_price = $site->getProductOptionEntrie('20', $cpu,'price')
         +$site->getProductOptionEntrie('21', $memory,'price')
         +$site->getProductOptionEntrie('22', $disk,'price');
 	$pricere1 = $db_price * $validate->getIntervalFactor($runtime) * $mainrabatt_script;
-    $price = $db_price * $validate->getIntervalFactor($runtime) - $pricere1 - $_POST['codeprice'];
+    $codeprice = isset($_SESSION['codeprice']['csgo']) ? max(0, (float)$_SESSION['codeprice']['csgo']) : 0;
+    $price = $db_price * $validate->getIntervalFactor($runtime) - $pricere1 - $codeprice;
 	
-    $price = number_format($price,2);
+    $price = round($price,2);
 
-    if($price < $_POST['codeprice']){
+    if($price < $codeprice){
         $error = 'Der Gutscheincode entspricht einem zu hohen Wert';
         $_SESSION['error_msg'] = 'Der Gutscheincode entspricht einem zu hohen Wert';
         header('Location: '.env('URL').'dashboard');
@@ -141,6 +136,7 @@ $response = $pterodactyl->createCSGO('CSGO Server', $user->getDataById($userid, 
 		include BASE_PATH . 'app/manager/customer/gameserver/functions/createMC.php';
 		sleep(4);
 
+        unset($_SESSION['codeprice']['csgo']);
         $user->removeMoney($price, $userid);
         $user->addTransaction($userid,'-'.$price,$proname.' Bestellung');
 		

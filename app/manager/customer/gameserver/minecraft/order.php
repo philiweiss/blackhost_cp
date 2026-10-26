@@ -49,7 +49,7 @@ if(isset($_POST['order'])){
 	$version = $_POST['version'];
 	$version_build = $_POST['version_build'];
 	$databases = $_POST['databases'];
-	$mainrabatt_script = $_POST['mainrabatt_script'];
+	$mainrabatt_script = $site->getProduktRabatt('gameserver');
 
 
     $db_price = $site->getProductOptionEntrie('20', $cpu,'price')
@@ -58,11 +58,12 @@ if(isset($_POST['order'])){
         +$site->getProductOptionEntrie('24', $databases,'price')
         +$site->getProductOptionEntrie('22', $disk,'price');
 	$pricere1 = $db_price * $validate->getIntervalFactor($runtime) * $mainrabatt_script;
-    $price = $db_price * $validate->getIntervalFactor($runtime) - $pricere1 - $_POST['codeprice'];
+    $codeprice = isset($_SESSION['codeprice']['gameserver']) ? max(0, (float)$_SESSION['codeprice']['gameserver']) : 0;
+    $price = $db_price * $validate->getIntervalFactor($runtime) - $pricere1 - $codeprice;
 	
-    $price = number_format($price,2);
+    $price = round($price,2);
 
-    if($price < $_POST['codeprice']){
+    if($price < $codeprice){
         $error = 'Der Gutscheincode entspricht einem zu hohen Wert';
         $_SESSION['error_msg'] = 'Der Gutscheincode entspricht einem zu hohen Wert';
         header('Location: '.env('URL').'dashboard');
@@ -144,6 +145,7 @@ $response = $pterodactyl->create('Minecraft Server', $user->getDataById($userid,
 		include BASE_PATH.'app/manager/customer/gameserver/functions/createMC.php';
 		sleep(4);
 
+        unset($_SESSION['codeprice']['gameserver']);
         $user->removeMoney($price, $userid);
         $user->addTransaction($userid,'-'.$price,$proname.' Bestellung');
 		

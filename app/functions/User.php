@@ -224,23 +224,13 @@ class User extends Controller
     }
 
     public function addMoney($money, $user_id){
-        $SQL = self::db()->prepare("SELECT * FROM `users` WHERE `id` = :id");
-        $SQL->execute(array(':id' => $user_id));
-        $userData = $SQL -> fetch(PDO::FETCH_ASSOC);
-
-        $newUserMoney = $userData['amount'] + $money;
-        $updateUserMoney = self::db()->prepare("UPDATE `users` SET `amount`=:newUserMoney WHERE `id` = :user_id");
-        $updateUserMoney->execute(array(":newUserMoney" => $newUserMoney, ":user_id" => $user_id));
+        $SQL = self::db()->prepare("UPDATE `users` SET `amount` = `amount` + :money WHERE `id` = :user_id");
+        $SQL->execute(array(":money" => $money, ":user_id" => $user_id));
     }
 
     public function removeMoney($price, $user_id){
-        $SQL = self::db()->prepare("SELECT * FROM `users` WHERE `id` = :id");
-        $SQL->execute(array(':id' => $user_id));
-        $userData = $SQL -> fetch(PDO::FETCH_ASSOC);
-
-        $newUserMoney = $userData['amount'] - $price;
-        $updateUserMoney = self::db()->prepare("UPDATE `users` SET `amount`=:newUserMoney WHERE `id` = :user_id");
-        $updateUserMoney->execute(array(":newUserMoney" => $newUserMoney, ":user_id" => $user_id));
+        $SQL = self::db()->prepare("UPDATE `users` SET `amount` = `amount` - :money WHERE `id` = :user_id");
+        $SQL->execute(array(":money" => $price, ":user_id" => $user_id));
     }
 
     public function addTransaction($user_id, $amount, $desc){

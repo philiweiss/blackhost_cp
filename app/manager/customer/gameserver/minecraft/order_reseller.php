@@ -49,7 +49,7 @@ if(isset($_POST['orderRes'])){
 	$version = $_POST['version'];
 	$version_build = $_POST['version_build'];
 	$databases = $_POST['databases'];
-	$mainrabatt_script = $_POST['mainrabatt_script'];
+	$mainrabatt_script = $site->getProduktRabatt('gameserver');
 
 
     $db_price = 0;
@@ -128,6 +128,7 @@ $response = $pterodactyl->create('game.host-control.eu', $id, $version, $limits,
 		include BASE_PATH.'app/manager/customer/gameserver/functions/createMC.php';
 		sleep(4);
 
+        unset($_SESSION['codeprice']['gameserver']);
         $user->removeMoney($price, $userid);
         $user->addTransaction($userid,'-'.$price,$proname.' Bestellung');
 		
