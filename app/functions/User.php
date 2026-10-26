@@ -233,6 +233,16 @@ class User extends Controller
         $SQL->execute(array(":money" => $price, ":user_id" => $user_id));
     }
 
+    // Zieht den Betrag nur ab, wenn das Guthaben reicht (atomar). Gibt true bei Erfolg zurueck.
+    public function tryRemoveMoney($price, $user_id){
+        if (!is_numeric($price) || $price < 0) {
+            return false;
+        }
+        $SQL = self::db()->prepare("UPDATE `users` SET `amount` = `amount` - :money WHERE `id` = :user_id AND `amount` >= :money2");
+        $SQL->execute(array(":money" => $price, ":money2" => $price, ":user_id" => $user_id));
+        return $SQL->rowCount() == 1;
+    }
+
     public function addTransaction($user_id, $amount, $desc){
         $SQL = self::db()->prepare("INSERT INTO `user_transactions`(`user_id`, `amount`, `desc`) VALUES (?,?,?)");
         $SQL->execute(array($user_id, $amount, $desc));

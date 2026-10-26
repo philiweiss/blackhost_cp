@@ -52,6 +52,21 @@ if(isset($_POST['orderRes'])){
 	$mainrabatt_script = $site->getProduktRabatt('gameserver');
 
 
+    if(!in_array((string)$version, array('14', '8'), true)){
+        $error = 'Ungültige Minecraft Edition';
+    }
+    if(!is_string($version_build) || !preg_match('/^[0-9]{1,2}(\.[0-9]{1,2}){1,2}$/', $version_build)){
+        $error = 'Ungültige Minecraft Version';
+    }
+    foreach(array($cpu, $memory, $disk, $backups, $databases) as $limitValue){
+        if(!is_string($limitValue) || !ctype_digit($limitValue)){
+            $error = 'Ungültige Ressourcenangabe';
+        }
+    }
+    if(!ctype_digit((string)$cpu) || (int)$cpu < 1 || (int)$memory < 1 || (int)$disk < 1){
+        $error = 'Ungültige Ressourcenangabe';
+    }
+
     $db_price = 0;
 	$pricere1 = 0;
     $price = 0;

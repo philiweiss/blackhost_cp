@@ -51,6 +51,14 @@ if(isset($_POST['order'])){
 	$mainrabatt_script = $site->getProduktRabatt('csgo');
 
 
+    if(!$site->productOptionEntrieExist('20', $cpu) || !$site->productOptionEntrieExist('21', $memory)
+        || !$site->productOptionEntrieExist('22', $disk)){
+        $error = 'Ungültige Produktoption';
+    }
+    if((string)$version !== '7'){
+        $error = 'Ungültiges Spiel';
+    }
+
     $db_price = $site->getProductOptionEntrie('20', $cpu,'price')
         +$site->getProductOptionEntrie('21', $memory,'price')
         +$site->getProductOptionEntrie('22', $disk,'price');

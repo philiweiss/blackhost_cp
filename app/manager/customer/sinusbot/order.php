@@ -50,6 +50,11 @@ if(isset($_POST['order'])){
     $password_sb = $_POST['password_sb']; 
 
 
+    if(!$site->productOptionEntrieExist('40', $cpu) || !$site->productOptionEntrieExist('41', $memory)
+        || !$site->productOptionEntrieExist('22', $disk) || !$site->productOptionEntrieExist('23', $backups)){
+        $error = 'Ungültige Produktoption';
+    }
+
     $db_price = $site->getProductOptionEntrie('40', $cpu,'price')
         +$site->getProductOptionEntrie('41', $memory,'price')
         +$site->getProductOptionEntrie('23', $backups,'price')

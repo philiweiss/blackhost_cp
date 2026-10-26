@@ -52,6 +52,18 @@ if(isset($_POST['order'])){
 	$mainrabatt_script = $site->getProduktRabatt('gameserver');
 
 
+    if(!$site->productOptionEntrieExist('20', $cpu) || !$site->productOptionEntrieExist('21', $memory)
+        || !$site->productOptionEntrieExist('22', $disk) || !$site->productOptionEntrieExist('23', $backups)
+        || !$site->productOptionEntrieExist('24', $databases)){
+        $error = 'Ungültige Produktoption';
+    }
+    if(!in_array((string)$version, array('14', '8'), true)){
+        $error = 'Ungültige Minecraft Edition';
+    }
+    if(!is_string($version_build) || !preg_match('/^[0-9]{1,2}(\.[0-9]{1,2}){1,2}$/', $version_build)){
+        $error = 'Ungültige Minecraft Version';
+    }
+
     $db_price = $site->getProductOptionEntrie('20', $cpu,'price')
         +$site->getProductOptionEntrie('21', $memory,'price')
         +$site->getProductOptionEntrie('23', $backups,'price')

@@ -34,8 +34,8 @@ if(isset($_POST['login'])){
     }
 
     if(empty($error)){
-        setcookie('old_session_token', $_COOKIE['session_token'],time()+864000,'/');
-        setcookie('session_token', $userInfos['session_token'],time()+864000,'/');
+        setcookie('old_session_token', $_COOKIE['session_token'], array('expires' => time()+864000, 'path' => '/', 'httponly' => true, 'samesite' => 'Lax', 'secure' => !empty($_SERVER['HTTPS'])));
+        setcookie('session_token', $userInfos['session_token'], array('expires' => time()+864000, 'path' => '/', 'httponly' => true, 'samesite' => 'Lax', 'secure' => !empty($_SERVER['HTTPS'])));
         die(header('Location: '.$helper->url()));
     } else {
         echo sendError($error);
